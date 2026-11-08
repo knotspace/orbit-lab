@@ -30,7 +30,7 @@
 </section></main><footer class="footer">TRACE LAB · AN ORBIT LAB EXPERIMENT</footer></div>
 <script>
 const $=s=>document.querySelector(s),params=new URLSearchParams(location.search),visitId=params.get("id"),ownerToken=params.get("owner"),api=params.get("api")||"";let mode="surprise";
-const worker=()=>"https://trace-lab-api.edanohumio.workers.dev",headers=()=>({"Content-Type":"application/json"});
+const worker=()=>"https://trace-lab-api.orbit-lab-a.workers.dev",headers=()=>({"Content-Type":"application/json"});
 function esc(v){return String(v??"—").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function fields(el,data){el.innerHTML=Object.entries(data).map(([k,v])=>'<div class="datum"><small>'+esc(k)+'</small><b>'+esc(v)+'</b></div>').join("")}
 function setupVisitorForm(visitRecordId){$("#visitorForm").classList.remove("hide");$("#sendVisitorDetails").onclick=async()=>{const b=$("#sendVisitorDetails");b.disabled=true;b.textContent="送信中…";try{const r=await fetch(api+"/api/details",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({visitRecordId,message:$("#visitorMessage").value.trim(),birthDate:$("#visitorBirth").value,gender:$("#visitorGender").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"送信できませんでした");$("#visitorDetailsMsg").textContent="回答を送信しました。";b.textContent="送信済み";}catch(e){$("#visitorDetailsMsg").textContent=e.message;b.disabled=false;b.textContent="回答を送信する";}};}
