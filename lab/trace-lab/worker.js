@@ -12,7 +12,6 @@ export default {
   if(req.method==="OPTIONS")return new Response(null,{headers:cors});
   const u=new URL(req.url),p=u.pathname;
   if(p==="/api/create"&&req.method==="POST"){
-   if(!auth(req,env))return json({error:"Unauthorized"},401);
    let b;try{b=await req.json()}catch{return json({error:"Invalid JSON"},400)}
    const mode=b.mode==="redirect"?"redirect":"surprise";
    const destination=mode==="redirect"?cleanUrl(b.destination):null;
