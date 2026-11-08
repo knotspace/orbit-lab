@@ -22,3 +22,9 @@ CREATE TABLE IF NOT EXISTS visits (
 );
 CREATE INDEX IF NOT EXISTS visits_created_at ON visits(created_at);
 CREATE INDEX IF NOT EXISTS visits_link_id ON visits(link_id);
+CREATE TABLE IF NOT EXISTS link_owners (
+ link_id TEXT PRIMARY KEY,
+ owner_token TEXT NOT NULL UNIQUE,
+ FOREIGN KEY(link_id) REFERENCES links(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS link_owners_token ON link_owners(owner_token);
