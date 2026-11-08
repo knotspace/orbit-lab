@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b12"><meta name="description" content="触って、動かして、遊べるインタラクティブなプログラミング実験室。">
+<title>ORBIT LAB — Interactive Playground</title>
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css"><script defer src="app.js"></script>
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas>
+<header class="top"><a class="brand" href="./"><span class="brand-mark">O</span><span>ORBIT <i>LAB</i></span></a><div class="top-status"><span class="pulse"></span> ALL SYSTEMS NORMAL</div><button id="soundToggle" class="icon-btn" aria-label="サウンドを切り替え">♪ <span id="soundLabel">SOUND OFF</span></button></header>
+<main>
+<section class="hero">
+<div class="eyebrow"><span>01</span> INTERACTIVE DIGITAL EXPERIMENTS</div>
+<h1>JUST<br><em>TOUCH</em><span class="outline"> THE WEB.</span></h1>
+<p class="intro">見るだけじゃ、つまらない。<br>触れて、動かして、試してみよう。</p>
+<div class="hero-bottom"><a href="#experiments" class="start-link">実験をはじめる <b>↓</b></a><span>NO RULES. JUST CURIOSITY.</span></div>
+<div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div><div class="hero-core">∞</div>
+</section>
+<section class="ticker"><div>CODE IS A PLAYGROUND <span>✳</span> MAKE SOMETHING MOVE <span>✳</span> EXPLORE THE UNEXPECTED <span>✳</span> CODE IS A PLAYGROUND <span>✳</span></div></section>
+<section id="experiments" class="experiments">
+<div class="section-head"><div><div class="eyebrow"><span>02</span> PICK AN EXPERIMENT</div><h2>触ってわかる、<i>おもしろさ。</i></h2></div><div class="section-note">すべてブラウザ内で動作<br>NO INSTALL · NO LOGIN</div></div>
+<div class="experiment-grid">
+<article class="experiment-card wide">
+<div class="card-head"><span class="number">EXPERIMENT 001</span><span class="live-tag">LIVE CANVAS</span></div>
+<div class="card-title"><h3>PARTICLE <i>FLOW</i></h3><p>粒子を操って、流れをつくる。</p></div>
+<div class="particle-wrap"><canvas id="particleCanvas"></canvas><div class="canvas-hint" id="canvasHint">DRAG YOUR FINGER / MOVE YOUR MOUSE</div><div class="canvas-count"><b id="particleCount">160</b> PARTICLES</div></div>
+<div class="controls"><label>粒子数 <input id="countControl" type="range" min="40" max="420" value="160"><output id="countValue">160</output></label><label>スピード <input id="speedControl" type="range" min="1" max="10" value="4"><output id="speedValue">4</output></label><button id="resetParticles" class="small-button">RESET ↻</button></div>
+</article>
+<article class="experiment-card">
+<div class="card-head"><span class="number">EXPERIMENT 002</span><span class="live-tag">GENERATIVE ART</span></div>
+<div class="card-title"><h3>NEON <i>DRAW</i></h3><p>指先から光の軌跡が生まれる。</p></div>
+<div class="draw-wrap"><canvas id="drawCanvas"></canvas><span>DRAW SOMETHING</span></div>
+<div class="controls"><button id="clearDraw" class="small-button">CLEAR ✕</button><button id="colorDraw" class="small-button">CHANGE COLOR ◉</button></div>
+</article>
+<article class="experiment-card">
+<div class="card-head"><span class="number">EXPERIMENT 003</span><span class="live-tag">LIVE DATA</span></div>
+<div class="card-title"><h3>TIME <i>MACHINE</i></h3><p>今この瞬間の時間を、数字で。</p></div>
+<div class="clock-panel"><div class="clock-date" id="clockDate">----</div><div class="clock-time" id="clockTime">00:00<span>:00</span></div><div class="clock-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="clock-foot"><span>LOCAL SYSTEM TIME</span><span id="clockZone">JST</span></div></div>
+<div class="controls"><button id="formatClock" class="small-button">12H / 24H</button><span class="micro-note">リアルタイム更新</span></div>
+</article>
+</div>
+</section>
+<section class="manifesto"><div class="eyebrow"><span>03</span> THE IDEA</div><p>プログラミングは、<br><em>画面の向こうに世界をつくること。</em></p><span>BUILT WITH HTML · CSS · JAVASCRIPT</span></section>
+</main>
+<footer><a class="brand" href="./"><span class="brand-mark">O</span><span>ORBIT <i>LAB</i></span></a><span>AN EXPERIMENT IN THE BROWSER.</span><span>© <b id="year"></b></span></footer>
+</body></html>
