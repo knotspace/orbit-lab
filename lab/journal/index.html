@@ -1,11 +1,40 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" #07090d><meta name="description" content="ORBIT LABのORBIT LABの制作ブログ。開発の裏側、実験、アップデートを記録。"><title>BLOG — ORBIT LAB</title><link rel="stylesheet" href="journal.css"><script defer src="journal.js"></script></head>
-<body><header class="site-head"><a class="wordmark" href="../">ORBIT <span>LAB</span></a><nav><a href="../">LAB HOME</a><a class="current" href="./">BLOG</a><a href="#about">ABOUT</a></nav><a class="head-cta" href="../">実験室へ戻る ↗</a></header>
-<main><section class="intro"><div class="kicker"><span></span> THE MAKING JOURNAL <b>VOL. 001 / 2026</b></div><h1>つくる過程も、<br><i>作品の一部。</i></h1><p>ORBIT LABの制作ノート。アイデアが形になるまで、試行錯誤も発見も、そのまま記録していきます。</p><div class="intro-foot"><span>MAKING / EXPERIMENTS / UPDATES</span><span>SCROLL TO EXPLORE ↓</span></div></section>
-<section class="featured-wrap"><div class="section-label"><span>01 / EDITOR'S PICK</span><span>FEATURED STORY</span></div><a class="featured article-link" href="?post=lab-begins"><div class="feature-art"><div class="orb"></div><span class="art-caption">ORBIT LAB / 001</span></div><div class="feature-copy"><div class="meta"><span>制作記録</span><time>2026.11.08</time><span>約3分</span></div><h2>ORBIT LABをつくり始めた理由。<br>ブラウザの中に、小さな実験室を。</h2><p>思いついたことを、すぐに動かして試せる場所がほしかった。作品集の最初の一歩と、これから作りたいもの。</p><span class="read-link">記事を読む <b>↗</b></span></div></a></section>
-<section class="journal-section"><div class="section-heading"><div><div class="section-label">02 / LATEST STORIES</div><h2>Blog <i>記事一覧</i></h2></div><p>開発の裏側や、新しい実験のこと。<br>少しずつ更新していきます。</p></div>
-<div class="journal-tools"><label class="search-box"><span>⌕</span><input id="journalSearch" type="search" placeholder="記事を検索する..." aria-label="記事を検索する"></label><span id="resultCount" class="result-count">4 STORIES</span></div><div class="filters" role="group" aria-label="カテゴリー"><button class="filter active" data-filter="all">すべて</button><button class="filter" data-filter="制作記録">制作記録</button><button class="filter" data-filter="アップデート">アップデート</button><button class="filter" data-filter="技術メモ">技術メモ</button><button class="filter" data-filter="実験ノート">実験ノート</button></div>
-<div class="story-grid" id="storyGrid"></div><div class="empty" id="empty" hidden>このカテゴリーの記事はまだありません。</div></section>
-<section class="about" id="about"><div class="about-mark">O</div><div><div class="section-label">03 / ABOUT THIS BLOG</div><h2>完成品だけじゃ、<br><i>伝わらないことがある。</i></h2><p>うまくいったことも、失敗したことも。ORBIT LABができていく過程を、ここに残します。</p></div><a href="../" class="about-link">ORBIT LABを見る ↗</a></section></main>
-<footer><a class="wordmark" href="../">ORBIT <span>LAB</span></a><span>THE MAKING JOURNAL — AN INDEPENDENT DIGITAL PLAYGROUND.</span><span>© ORBIT LAB 2026</span></footer>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f7f4"><meta name="description" content="ORBIT LABの開発記録と実験ノート。制作の裏側、技術メモ、アップデートを紹介します。">
+<title>BLOG — ORBIT LAB</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="journal.css"><script defer src="journal.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">本文へ移動</a>
+<header class="header"><a class="brand" href="../" aria-label="ORBIT LAB ホーム"><span class="brand-mark">O</span><span>ORBIT<span class="brand-light"> LAB</span><small>EXPERIMENTS & JOURNAL</small></span></a>
+<nav class="nav"><a href="#discover">Discover <span>注目</span> →</a><a href="#latest">Latest <span>新着</span> →</a><a href="#categories">Categories <span>カテゴリー</span> →</a><a href="#journal">Journal <span>読みもの</span> →</a></nav>
+<div class="header-right"><span class="lang">JP <i>EN</i></span><a class="header-link" href="../">LAB HOME ↗</a><button class="menu-toggle" aria-label="メニュー">☰</button></div></header>
+<main id="main">
+<section class="hero"><div class="hero-copy"><div class="eyebrow"><span></span> ORBIT LAB JOURNAL / VOL. 01</div><h1>アイデアを、<br>動くものに。<br><em>その過程まで。</em></h1><p>実験、制作、発見。ブラウザの中に生まれる小さな作品と、その裏側にある考えを記録する開発メディア。</p>
+<form class="hero-search" id="searchForm"><span>⌕</span><input id="journalSearch" type="search" placeholder="キーワードで記事を探す" aria-label="キーワードで記事を探す"><button type="submit">検索</button></form>
+<div class="quick-tags"><a href="#journal" data-tag="制作記録">制作記録</a><a href="#journal" data-tag="技術メモ">技術メモ</a><a href="#journal" data-tag="アップデート">アップデート</a><a href="#journal" data-tag="実験ノート">実験ノート</a></div></div>
+<div class="hero-visual"><div class="visual-top"><span>FIELD NOTES</span><span>NO. 001 — 026</span></div><div class="visual-orbit orbit-a"></div><div class="visual-orbit orbit-b"></div><div class="visual-core"><span>O</span></div><div class="visual-caption"><b>MAKE / TEST / LEARN</b><span>Ideas become experiments.</span></div><div class="visual-index">01<br><small>ORBIT</small></div></div>
+</section>
+<section class="ticker"><span>INDEPENDENT DIGITAL PLAYGROUND</span><i>✳</i><span>MAKING JOURNAL</span><i>✳</i><span>IDEAS INTO INTERACTIVE EXPERIENCES</span><i>✳</i><span>ORBIT LAB</span></section>
+<section class="section discover" id="discover"><div class="section-head"><div><div class="eyebrow">FEATURED / EDITOR'S PICK</div><h2>今、読んでほしい<span>記事。</span></h2></div><p>制作の背景や、最近のアップデート。<br>ORBIT LABの「今」をまとめました。</p></div>
+<div class="featured-layout"><a class="feature-main article-link" href="?post=lab-begins"><div class="feature-image image-planet"><span class="image-label">FEATURED STORY <b>01</b></span><div class="planet"></div><span class="image-credit">ORBIT LAB / ORIGIN</span></div><div class="feature-info"><div class="meta"><b>制作記録</b><time>2026.11.08</time><span>約3分</span></div><h3>ORBIT LABをつくり始めた理由。ブラウザの中に、小さな実験室を。</h3><p>思いついたことを、すぐに動かして試せる場所がほしかった。作品集の最初の一歩と、これから作りたいもの。</p><span class="arrow-link">記事を読む <b>↗</b></span></div></a>
+<div class="feature-side"><div class="side-heading"><span>Editor's selection</span><a href="#journal">すべて見る ↗</a></div><a class="side-story article-link" href="?post=apple-ui-refresh"><div class="side-thumb thumb-ui"><span>✳</span></div><div><div class="meta"><b>アップデート</b><time>2026.11.08</time></div><h3>ORBIT LABのデザインを大きく見直しました。</h3><span class="side-read">続きを読む ↗</span></div></a>
+<a class="side-story article-link" href="?post=small-experiments"><div class="side-thumb thumb-experiment"><span>◎</span></div><div><div class="meta"><b>実験ノート</b><time>2026.11.08</time></div><h3>小さな実験を、ひとつずつ独立した作品に。</h3><span class="side-read">続きを読む ↗</span></div></a>
+<a class="side-story article-link" href="?post=browser-first"><div class="side-thumb thumb-code"><span>&lt;/&gt;</span></div><div><div class="meta"><b>技術メモ</b><time>2026.11.08</time></div><h3>インストール不要。ブラウザで動く作品にこだわる理由。</h3><span class="side-read">続きを読む ↗</span></div></a></div></div></section>
+<section class="category-band" id="categories"><div class="section-head"><div><div class="eyebrow">BROWSE BY CATEGORY</div><h2>興味のあるテーマから<span>探す。</span></h2></div><p>気になる分野を選ぶと、<br>関連する記事だけを表示します。</p></div><div class="category-grid">
+<button class="category-card" data-category="制作記録"><span class="cat-no">01</span><span class="cat-icon">✳</span><b>制作記録</b><small>MAKING / 01</small><i>↗</i></button>
+<button class="category-card" data-category="アップデート"><span class="cat-no">02</span><span class="cat-icon">↗</span><b>アップデート</b><small>UPDATES / 02</small><i>↗</i></button>
+<button class="category-card" data-category="技術メモ"><span class="cat-no">03</span><span class="cat-icon">&lt;/&gt;</span><b>技術メモ</b><small>TECH NOTES / 03</small><i>↗</i></button>
+<button class="category-card" data-category="実験ノート"><span class="cat-no">04</span><span class="cat-icon">◎</span><b>実験ノート</b><small>EXPERIMENTS / 04</small><i>↗</i></button>
+</div></section>
+<section class="section latest" id="latest"><div class="section-head"><div><div class="eyebrow">LATEST DISCOVERIES</div><h2>新着の<span>記事。</span></h2></div><a class="text-link" href="#journal">記事をすべて見る ↗</a></div><div class="latest-strip" id="latestStrip"></div></section>
+<section class="section journal" id="journal"><div class="section-head"><div><div class="eyebrow">JOURNAL / ALL STORIES</div><h2>読みもの<span>一覧。</span></h2></div><p>開発の裏側、技術のこと、実験の記録。<br>ORBIT LABの日々を残していきます。</p></div>
+<div class="journal-toolbar"><div class="filters" role="group" aria-label="記事カテゴリー"><button class="filter active" data-filter="all">すべて <small>ALL</small></button><button class="filter" data-filter="制作記録">制作記録</button><button class="filter" data-filter="アップデート">アップデート</button><button class="filter" data-filter="技術メモ">技術メモ</button><button class="filter" data-filter="実験ノート">実験ノート</button></div><span id="resultCount" class="result-count">04 ARTICLES</span></div>
+<div class="story-grid" id="storyGrid"></div><div class="empty" id="empty" hidden>該当する記事がありません。検索条件を変えてみてください。</div></section>
+<section class="newsletter"><div class="newsletter-mark">O.</div><div><div class="eyebrow">ORBIT LAB LETTER</div><h2>新しい実験の記録を、<br><em>ここから。</em></h2><p>新しい作品や制作ノートを、Blogで随時更新しています。</p></div><a href="../" class="newsletter-button">ORBIT LABを見る <b>↗</b></a></section>
+</main>
+<footer class="footer"><div class="footer-top"><a class="brand" href="../"><span class="brand-mark">O</span><span>ORBIT<span class="brand-light"> LAB</span><small>EXPERIMENTS & JOURNAL</small></span></a><p>アイデアを、動くものに。<br>小さな実験と発見を、ここから。</p><a class="footer-home" href="../">LAB HOME ↗</a></div><div class="footer-bottom"><span>© 2026 ORBIT LAB</span><span>INDEPENDENT DIGITAL PLAYGROUND · JAPAN</span><a href="#main">BACK TO TOP ↑</a></div></footer>
 </body></html>
