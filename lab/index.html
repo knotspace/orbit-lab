@@ -21,36 +21,12 @@
 <section id="experiments" class="section">
 <div class="section-head"><div><div class="eyebrow"><span>01 / LIVE EXPERIMENTS</span></div><h2>PLAY WITH<br><i>THE IMPOSSIBLE.</i></h2></div><p>説明を読むより、まず触ってみよう。<br>すべての実験はこのブラウザの中で動く。</p></div>
 <div class="experiment-grid">
-<article class="experiment-card card-particle">
-<div class="card-meta"><span>01 — PARTICLE PHYSICS</span><span class="live-tag">LIVE</span></div><div class="card-title"><h3>PARTICLE <i>FLOW</i></h3><p>指先が、粒子の宇宙を歪ませる。</p></div>
-<div class="particle-wrap"><canvas id="particleCanvas"></canvas><div class="canvas-hint">MOVE / TOUCH TO INTERACT</div><div class="canvas-count"><b id="particleCount">180</b><span> PARTICLES</span></div></div>
-<div class="controls"><label>粒子数 <input id="countControl" type="range" min="60" max="360" value="180"><output id="countValue">180</output></label><label>反応速度 <input id="speedControl" type="range" min="1" max="10" value="5"><output id="speedValue">5</output></label><button id="resetParticles" class="small-button">REGENERATE ↻</button></div>
-</article>
-<article class="experiment-card card-planet">
-<div class="card-meta"><span>02 — PROCEDURAL 3D</span><span class="live-tag">INTERACTIVE</span></div><div class="card-title"><h3>ORBITAL <i>WORLD</i></h3><p>指で惑星を回転させる。</p></div>
-<div class="planet-stage"><canvas id="planetCanvas" aria-label="ドラッグして回転できる惑星"></canvas><div class="planet-label label-a">KEPLER-186F <b>01</b></div><div class="planet-label label-b">ROTATE TO EXPLORE ↗</div><div class="planet-data"><span>ATMOSPHERE</span><b id="planetAtmos">N₂ · O₂</b></div></div>
-<div class="controls"><button id="planetMode" class="small-button">CHANGE PLANET ◉</button><span class="micro-note">DRAG / SWIPE TO ROTATE</span></div>
-</article>
-<article class="experiment-card card-gravity">
-<div class="card-meta"><span>03 — NEWTONIAN MECHANICS</span><span class="live-tag">SANDBOX</span></div><div class="card-title"><h3>GRAVITY <i>LAB</i></h3><p>天体を置いて、重力の動きを観察。</p></div>
-<div class="gravity-stage"><canvas id="gravityCanvas"></canvas><div class="stage-hint">TAP TO CREATE A BODY</div><div class="gravity-readout"><b id="bodyCount">0</b> BODIES</div></div>
-<div class="controls"><button id="gravityReset" class="small-button">RESET SYSTEM ↻</button><button id="gravityPause" class="small-button">PAUSE Ⅱ</button><label class="compact-control">重力 <input id="gravityPower" type="range" min="1" max="10" value="5"></label></div>
-</article>
-<article class="experiment-card card-life">
-<div class="card-meta"><span>04 — EMERGENT SYSTEMS</span><span class="live-tag">CELLULAR AUTOMATA</span></div><div class="card-title"><h3>THE <i>LIFE</i> ENGINE</h3><p>シンプルなルールから、生命のような模様が生まれる。</p></div>
-<div class="life-stage"><canvas id="lifeCanvas"></canvas><div class="life-overlay" id="lifeOverlay">GENERATING PATTERNS</div></div>
-<div class="controls"><button id="lifePlay" class="small-button">PAUSE Ⅱ</button><button id="lifeRandom" class="small-button">RANDOMIZE ↻</button><button id="lifeClear" class="small-button">CLEAR ✕</button><label class="compact-control">速度 <input id="lifeSpeed" type="range" min="1" max="20" value="8"></label></div>
-</article>
-<article class="experiment-card card-draw">
-<div class="card-meta"><span>05 — GENERATIVE ART</span><span class="live-tag">YOUR CANVAS</span></div><div class="card-title"><h3>NEON <i>STUDIO</i></h3><p>描くたびに、光が形になる。</p></div>
-<div class="draw-wrap"><canvas id="drawCanvas"></canvas><span class="draw-hint">DRAW WITH YOUR FINGER OR MOUSE</span></div>
-<div class="controls"><button id="clearDraw" class="small-button">CLEAR ✕</button><button id="colorDraw" class="small-button">NEXT COLOR ◉</button><button id="saveDraw" class="small-button">EXPORT PNG ↓</button></div>
-</article>
-<article class="experiment-card card-time">
-<div class="card-meta"><span>06 — LIVE DATA</span><span class="live-tag">REAL TIME</span></div><div class="card-title"><h3>TIME <i>CODE</i></h3><p>この瞬間を、デジタルに刻む。</p></div>
-<div class="clock-panel"><div class="clock-date" id="clockDate">----</div><div class="clock-time" id="clockTime">00:00<span>:00</span></div><div class="clock-progress"><i id="clockProgress"></i></div><div class="clock-foot"><span>LOCAL SYSTEM TIME</span><span id="clockZone">JST</span></div></div>
-<div class="controls"><button id="formatClock" class="small-button">12H / 24H</button><span class="micro-note" id="dayProgress">DAY PROGRESS — 0%</span></div>
-</article>
+<a class="experiment-card standalone-card card-particle" href="particle/"><div class="card-meta"><span>01 — PARTICLE PHYSICS</span><span class="live-tag">OPEN EXPERIMENT ↗</span></div><div class="card-title"><h3>PARTICLE <i>FLOW</i></h3><p>指先が、粒子の宇宙を歪ませる。</p></div><div class="standalone-art generic-art"><div class="art-symbol">01</div><b>EXPLORE PARTICLE FLOW ↗</b></div></a>
+<a class="experiment-card standalone-card card-planet" href="orbital/"><div class="card-meta"><span>02 — PROCEDURAL 3D</span><span class="live-tag">OPEN EXPERIMENT ↗</span></div><div class="card-title"><h3>ORBITAL <i>WORLD</i></h3><p>指で惑星を回転させる。</p></div><div class="standalone-art generic-art"><div class="art-symbol">02</div><b>EXPLORE ORBITAL WORLD ↗</b></div></a>
+<a class="experiment-card standalone-card card-gravity" href="gravity/"><div class="card-meta"><span>03 — NEWTONIAN MECHANICS</span><span class="live-tag">OPEN EXPERIMENT ↗</span></div><div class="card-title"><h3>GRAVITY <i>LAB</i></h3><p>天体を置いて、重力の動きを観察。</p></div><div class="standalone-art generic-art"><div class="art-symbol">03</div><b>ENTER GRAVITY LAB ↗</b></div></a>
+<a class="experiment-card standalone-card card-life" href="life/"><div class="card-meta"><span>04 — EMERGENT SYSTEMS</span><span class="live-tag">OPEN EXPERIMENT ↗</span></div><div class="card-title"><h3>THE <i>LIFE</i> ENGINE</h3><p>シンプルなルールから生命のような模様が生まれる。</p></div><div class="standalone-art generic-art"><div class="art-symbol">04</div><b>WATCH LIFE EMERGE ↗</b></div></a>
+<a class="experiment-card standalone-card card-draw" href="draw/"><div class="card-meta"><span>05 — GENERATIVE ART</span><span class="live-tag">OPEN EXPERIMENT ↗</span></div><div class="card-title"><h3>NEON <i>STUDIO</i></h3><p>描くたびに、光が形になる。</p></div><div class="standalone-art generic-art"><div class="art-symbol">05</div><b>OPEN NEON STUDIO ↗</b></div></a>
+<a class="experiment-card standalone-card card-time" href="time/"><div class="card-meta"><span>06 — LIVE DATA</span><span class="live-tag">OPEN EXPERIMENT ↗</span></div><div class="card-title"><h3>TIME <i>CODE</i></h3><p>この瞬間を、デジタルに刻む。</p></div><div class="standalone-art generic-art"><div class="art-symbol">06</div><b>OPEN TIME CODE ↗</b></div></a>
 <a class="experiment-card standalone-card" href="solar-system/"><div class="card-meta"><span>07 — HELIOCENTRIC ASTRONOMY</span><span class="live-tag">OPEN EXPERIMENT ↗</span></div><div class="card-title"><h3>THE <i>SOLAR SYSTEM</i></h3><p>太陽を中心に、8つの惑星が公転する地動説モデル。</p></div><div class="standalone-art solar-art"><span class="sun"></span><i class="orbit o1"></i><i class="orbit o2"></i><i class="orbit o3"></i><i class="orbit o4"></i><b>EXPLORE SOLAR SYSTEM ↗</b></div></a>
 <a class="experiment-card standalone-card" href="planet-simulator/"><div class="card-meta"><span>08 — PLANETARY LABORATORY</span><span class="live-tag">OPEN EXPERIMENT ↗</span></div><div class="card-title"><h3>PLANET <i>SIMULATOR</i></h3><p>8つの惑星を切り替え、自転させながら観察。</p></div><div class="standalone-art planet-art"><span class="planet-ball"></span><b>ENTER PLANET SIMULATOR ↗</b></div></a></div>
 </section>
