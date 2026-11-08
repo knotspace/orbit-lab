@@ -24,7 +24,7 @@ const $=s=>document.querySelector(s),params=new URLSearchParams(location.search)
 const worker=()=>$("#worker").value.trim().replace(/\/$/,""),headers=()=>({"Authorization":"Bearer "+$("#key").value.trim(),"Content-Type":"application/json"});
 function esc(v){return String(v??"—").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function fields(el,data){el.innerHTML=Object.entries(data).map(([k,v])=>'<div class="datum"><small>'+esc(k)+'</small><b>'+esc(v)+'</b></div>').join("")}
-function setMode(next){mode=next;document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));$("#destinationRow").classList.toggle("hide",mode!=="redirect")}
+function setMode(next){mode=next;document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));$("#destinationRow").classList.toggle("hide",mode!=="redirect");$("#dest").required=mode==="redirect";if(mode==="surprise")$("#dest").value=""}
 document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
 try{const saved=JSON.parse(localStorage.getItem("traceLabSettings")||"null");if(saved){$("#worker").value=saved.worker||"";$("#key").value=saved.key||"";$("#remember").checked=true;}}catch{}
 $("#saveSettings").onclick=()=>{try{if($("#remember").checked){if(!worker()||!$("#key").value.trim())throw Error("Worker URLと管理キーを入力してください");localStorage.setItem("traceLabSettings",JSON.stringify({worker:worker(),key:$("#key").value.trim()}));$("#settingsMsg").textContent="この端末に保存しました。";}else{localStorage.removeItem("traceLabSettings");$("#settingsMsg").textContent="保存設定を削除しました。";}}catch(e){$("#settingsMsg").textContent=e.message}};
