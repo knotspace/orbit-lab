@@ -24,7 +24,6 @@ jobs:
           fi
           test -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" || (echo "::error::Add CLOUDFLARE_API_TOKEN to GitHub Actions secrets." && exit 1)
           test -n "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" || (echo "::error::Add CLOUDFLARE_ACCOUNT_ID to GitHub Actions secrets." && exit 1)
-          test -n "${{ secrets.TRACE_LAB_ADMIN_KEY }}" || (echo "::error::Add TRACE_LAB_ADMIN_KEY to GitHub Actions secrets." && exit 1)
       - name: Install Wrangler
         run: npm install --global wrangler
       - name: Apply database schema
@@ -33,13 +32,6 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: wrangler d1 execute trace-lab --remote --file=./schema.sql
-      - name: Set Worker admin key
-        working-directory: lab/trace-lab
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TRACE_LAB_ADMIN_KEY: ${{ secrets.TRACE_LAB_ADMIN_KEY }}
-        run: printf '%s' "$TRACE_LAB_ADMIN_KEY" | wrangler secret put ADMIN_KEY
       - name: Deploy Worker
         working-directory: lab/trace-lab
         env:
