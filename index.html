@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101522">
+  <meta name="description" content="毎日の作業をひとつの場所に。タイマー、メモ、タスク、計算ツールをまとめた軽量ワークスペース。">
+  <title>ORBIT — Your personal workspace</title>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="ORBIT home"><span class="brand-mark">O</span><span>ORBIT</span></a>
+    <div class="top-actions">
+      <span class="live-dot">YOUR SPACE</span>
+      <button class="mode-toggle" id="schoolMode" type="button" aria-pressed="false"><span class="mode-icon">◈</span><span id="modeLabel">スクールモード</span></button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow" id="dateLine">YOUR DAY, YOUR PACE</p>
+        <h1>今日を、<span>自分のペースで。</span></h1>
+        <p class="hero-sub" id="greeting">考えることも、つくることも。ここから始めよう。</p>
+      </div>
+      <div class="clock-card"><span class="clock-label">LOCAL TIME</span><strong id="clock">--:--</strong><span id="clockDate">Loading date…</span></div>
+    </section>
+
+    <section class="section-head"><div><p class="eyebrow">QUICK ACCESS</p><h2>ツールボックス</h2></div><span class="section-note">必要なものを、すぐそばに。</span></section>
+    <section class="tool-grid">
+      <article class="tool-card focus-card">
+        <div class="card-top"><span class="tool-icon purple">◷</span><span class="card-kicker">FOCUS</span><span class="card-more">01</span></div>
+        <h3>フォーカスタイマー</h3><p class="card-desc">集中する時間を、自分でデザイン。</p>
+        <div class="timer-display" id="timerDisplay">25:00</div>
+        <div class="timer-presets"><button data-min="15">15分</button><button class="selected" data-min="25">25分</button><button data-min="50">50分</button></div>
+        <div class="button-row"><button class="primary-btn" id="timerStart">スタート</button><button class="quiet-btn" id="timerReset">リセット</button></div>
+      </article>
+
+      <article class="tool-card notes-card">
+        <div class="card-top"><span class="tool-icon blue">▤</span><span class="card-kicker">QUICK NOTE</span><span class="card-more">02</span></div>
+        <h3>クイックメモ</h3><p class="card-desc">思いついたことを、すぐに書き留める。</p>
+        <textarea id="quickNote" placeholder="アイデアやメモを入力…" aria-label="クイックメモ"></textarea>
+        <div class="note-footer"><span id="noteStatus">この端末に自動保存</span><span id="noteCount">0文字</span></div>
+      </article>
+
+      <article class="tool-card tasks-card">
+        <div class="card-top"><span class="tool-icon mint">✓</span><span class="card-kicker">CHECKLIST</span><span class="card-more">03</span></div>
+        <h3>マイタスク</h3><p class="card-desc">小さな一歩を、ひとつずつ。</p>
+        <form id="taskForm" class="task-form"><input id="taskInput" maxlength="70" placeholder="タスクを追加…" aria-label="タスク"><button aria-label="追加" type="submit">＋</button></form>
+        <ul id="taskList" class="task-list"></ul><div class="task-footer"><span id="taskProgress">0 / 0 完了</span><button id="clearDone" class="text-btn" type="button">完了分を削除</button></div>
+      </article>
+
+      <article class="tool-card calc-card">
+        <div class="card-top"><span class="tool-icon orange">＋</span><span class="card-kicker">CALCULATOR</span><span class="card-more">04</span></div>
+        <h3>ミニ計算機</h3><p class="card-desc">ちょっとした計算を、すばやく。</p>
+        <div class="calc"><div class="calc-screen"><small id="calcExpression">READY</small><output id="calcOutput">0</output></div><div class="calc-keys">
+          <button data-key="clear" class="key-muted">AC</button><button data-key="(" class="key-muted">(</button><button data-key=")" class="key-muted">)</button><button data-key="/" class="key-op">÷</button>
+          <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button><button data-key="*" class="key-op">×</button>
+          <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button><button data-key="-" class="key-op">−</button>
+          <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button><button data-key="+" class="key-op">＋</button>
+          <button data-key="0" class="wide">0</button><button data-key=".">.</button><button data-key="=" class="key-equal">＝</button>
+        </div></div>
+      </article>
+    </section>
+
+    <section class="bottom-strip">
+      <div class="quote-mark">“</div><div><p class="eyebrow">A LITTLE REMINDER</p><p class="quote" id="dailyQuote">大きなことは、小さな一歩から。</p></div><button id="newQuote" class="quote-refresh" type="button" aria-label="別の言葉を表示">↻</button>
+    </section>
+    <footer><span>ORBIT</span><span>シンプルに、心地よく。</span><span id="year"></span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
