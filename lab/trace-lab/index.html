@@ -8,9 +8,9 @@
 <main>
 <section class="hero"><div class="eyebrow">NETWORK EXPERIMENT</div><h1>リンクをつくって、<br><span style="color:#9bc5ff">仕組みを試そう。</span></h1><p>用途を選んで共有URLを発行できます。生成したURLは発行から24時間で自動失効します。アクセス情報の記録については、訪問者に事前に通知します。</p></section>
 <section id="owner" class="card hide"><div class="eyebrow">CREATOR ACCESS</div><h2>このリンクのアクセス記録</h2><p class="muted">このURLを発行した人だけが確認できるページです。</p><div id="ownerResults" class="owner-list"><p class="status">読み込み中…</p></div></section>
-<section id="visitor" class="card visitor hide"><div class="eyebrow">SHARED LINK</div><h2 id="visitorTitle">リンクを開きました</h2><p class="warn">アクセス元のIPアドレス・IPから推定した地域・アクセス時刻をリンク作成者に記録します。GPS共有は任意で、ボタンを押してブラウザで許可した場合だけ送信されます。</p><div id="visitorResult"></div>
+<section id="visitor" class="card visitor hide"><div class="eyebrow">SHARED LINK</div><h2 id="visitorTitle">リンクを開きました</h2><p class="warn">アクセス元のIPアドレス・IPから推定した地域・接続事業者情報・アクセス時刻を記録します。IPの概算地域判定には外部のIP位置推定サービスを利用します。GPS共有は任意で、ボタンを押してブラウザで許可した場合だけ送信されます。</p><div id="visitorResult"></div>
 <div id="visitorForm" class="details hide">
-<h2>何か伝えたいことはありますか？</h2><p class="muted">メッセージ・生年月日・性別は、必要な場合だけ入力できます。すべて任意で、空欄のままでも利用できます。</p><p class="warn">送信した内容はリンク作成者が確認できます。URLの24時間有効期限はリンク自体の期限で、送信データの保存期間を示すものではありません。保存期間・削除方法はこの画面では確認できないため、共有してよい内容だけを入力してください。</p>
+<h2>何か伝えたいことはありますか？</h2><p class="muted">メッセージ・生年月日・性別は、必要な場合だけ入力できます。すべて任意で、空欄のままでも利用できます。</p><p class="warn">送信した内容はリンク作成者が確認できます。URLの24時間有効期限はリンク自体の期限で、送信データの保存期間を示すものではありません。リンクの有効期限は24時間です。アクセス記録・回答・GPS情報は、発行から24時間以上経過した後の毎日1回の定期削除処理で削除されます。削除まで最大約48時間かかる場合があります。生年月日・性別は個人情報なので、入力しないことを推奨します。未成年者は特に入力しないでください。共有してよい内容だけを入力してください。</p>
 <label class="field-label" for="visitorMessage">メッセージ</label>
 <textarea id="visitorMessage" rows="3" maxlength="1000" placeholder="伝えたいことを書いてね" style="width:100%;resize:vertical;color:var(--text);background:#080f1a;border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit"></textarea>
 <label class="field-label" for="visitorBirth">生年月日（任意）</label><input id="visitorBirth" type="date">
