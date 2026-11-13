@@ -1,18 +1,24 @@
-const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Access-Control-Allow-Headers":"Content-Type,Authorization"};
+const cors={"Access-Control-Allow-Origin":"https://knotspace.github.io","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Access-Control-Allow-Headers":"Content-Type,Authorization","Access-Control-Max-Age":"86400","Vary":"Origin"};
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...cors,"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"}});
 const auth=(r,e)=>!!e.ADMIN_KEY&&r.headers.get("Authorization")==="Bearer "+e.ADMIN_KEY;
 const makeId=()=>crypto.randomUUID().replace(/-/g,"").slice(0,20);
 const makeOwnerToken=()=>crypto.randomUUID().replace(/-/g,"")+crypto.randomUUID().replace(/-/g,"").slice(0,8);
 const cleanUrl=value=>{try{const u=new URL(value);return ["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}};
+const MAX_BODY_BYTES=8192;
+const readJson=async req=>{const length=req.headers.get("Content-Length");if(length&&Number(length)>MAX_BODY_BYTES)return {ok:false,status:413,error:"Request body too large"};let raw;try{raw=await req.text()}catch{return {ok:false,status:400,error:"Invalid JSON"}}if(new TextEncoder().encode(raw).byteLength>MAX_BODY_BYTES)return {ok:false,status:413,error:"Request body too large"};try{const value=JSON.parse(raw);if(!value||typeof value!=="object"||Array.isArray(value))return {ok:false,status:400,error:"JSON object required"};return {ok:true,value}}catch{return {ok:false,status:400,error:"Invalid JSON"}}};
 export default {
  async scheduled(event,env,ctx){ctx.waitUntil((async()=>{const cutoff=new Date(Date.now()-24*60*60*1000).toISOString();await env.DB.prepare("DELETE FROM visits WHERE link_id IN (SELECT id FROM links WHERE created_at <= ?)").bind(cutoff).run();await env.DB.prepare("DELETE FROM links WHERE created_at <= ?").bind(cutoff).run();})());},
  async fetch(req,env){
+  const origin=req.headers.get("Origin");
+  if(origin&&origin!=="https://knotspace.github.io")return new Response("Forbidden",{status:403});
   if(req.method==="OPTIONS")return new Response(null,{headers:cors});
   const u=new URL(req.url),p=u.pathname;
   if(p==="/api/create"&&req.method==="POST"){
-   let b;try{b=await req.json()}catch{return json({error:"Invalid JSON"},400)}
+   const parsed=await readJson(req);
+   if(!parsed.ok)return json({error:parsed.error},parsed.status);
+   const b=parsed.value;
    const mode=b.mode==="redirect"?"redirect":"surprise";
-   const destination=mode==="redirect"?cleanUrl(b.destination):null;
+   const destination=mode==="redirect"&&typeof b.destination==="string"&&b.destination.length<=2048?cleanUrl(b.destination):null;
    if(mode==="redirect"&&!destination)return json({error:"転送先URLはhttp/httpsで指定してください"},400);
    const id=makeId(),ownerToken=makeOwnerToken();
    await env.DB.prepare("INSERT INTO links (id,mode,destination,created_at) VALUES (?,?,?,?)").bind(id,mode,destination||"",new Date().toISOString()).run();
@@ -20,7 +26,9 @@ export default {
    return json({id,mode,ownerToken,expiresAt:new Date(Date.now()+24*60*60*1000).toISOString()});
   }
   if(p==="/api/visit"&&req.method==="POST"){
-   let b;try{b=await req.json()}catch{return json({error:"Invalid JSON"},400)}
+   const parsed=await readJson(req);
+   if(!parsed.ok)return json({error:parsed.error},parsed.status);
+   const b=parsed.value;
    if(typeof b.id!=="string"||!/^[a-f0-9]{20}$/.test(b.id))return json({error:"Invalid link"},400);
    const link=await env.DB.prepare("SELECT id,mode,destination,created_at FROM links WHERE id=?").bind(b.id).first();
    if(!link)return json({error:"このURLは存在しないか、すでに失効しています。"},404);
@@ -41,7 +49,9 @@ export default {
    return json({mode:link.mode,destination:link.destination,visitRecordId,ip,region:region||"地域不明",city:city||"市区町村不明",regionLabel:regionLabel||"地域不明",cityLabel:cityLabel||"市区町村不明",country:country||"不明",isp:geo.isp||"不明"});
   }
   if(p==="/api/details"&&req.method==="POST"){
-   let b;try{b=await req.json()}catch{return json({error:"Invalid JSON"},400)}
+   const parsed=await readJson(req);
+   if(!parsed.ok)return json({error:parsed.error},parsed.status);
+   const b=parsed.value;
    if(typeof b.visitRecordId!=="string"||!/^[a-f0-9]{20}$/.test(b.visitRecordId))return json({error:"Invalid visit"},400);
    const message=typeof b.message==="string"?b.message.trim().slice(0,1000):"";
    const birthDate=typeof b.birthDate==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(b.birthDate)?b.birthDate:"";
@@ -54,7 +64,9 @@ export default {
    return json({ok:true});
   }
   if(p==="/api/gps"&&req.method==="POST"){
-   let b;try{b=await req.json()}catch{return json({error:"Invalid JSON"},400)}
+   const parsed=await readJson(req);
+   if(!parsed.ok)return json({error:parsed.error},parsed.status);
+   const b=parsed.value;
    if(typeof b.visitRecordId!=="string"||!/^[a-f0-9]{20}$/.test(b.visitRecordId)||typeof b.latitude!=="number"||typeof b.longitude!=="number"||Math.abs(b.latitude)>90||Math.abs(b.longitude)>180)return json({error:"Invalid GPS coordinates"},400);
    const cutoff=new Date(Date.now()-24*60*60*1000).toISOString();
    const result=await env.DB.prepare("UPDATE visits SET gps_lat=?,gps_lon=?,gps_at=? WHERE id=? AND link_id IN (SELECT id FROM links WHERE created_at > ?)").bind(b.latitude,b.longitude,new Date().toISOString(),b.visitRecordId,cutoff).run();
