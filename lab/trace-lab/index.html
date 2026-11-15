@@ -8,16 +8,20 @@
 <main>
 <section class="hero"><div class="eyebrow">NETWORK EXPERIMENT</div><h1>リンクをつくって、<br><span style="color:#9bc5ff">仕組みを試そう。</span></h1><p>用途を選んで共有URLを発行できます。生成したURLは発行から24時間で自動失効します。アクセス情報の記録については、訪問者に事前に通知します。</p></section>
 <section id="owner" class="card hide"><div class="eyebrow">CREATOR ACCESS</div><h2>このリンクのアクセス記録</h2><p class="muted">このURLを発行した人だけが確認できるページです。</p><div id="ownerResults" class="owner-list"><p class="status">読み込み中…</p></div></section>
-<section id="visitor" class="card visitor hide"><div class="eyebrow">SHARED LINK</div><h2 id="visitorTitle">リンクを開きました</h2><p class="warn">アクセス元のIPアドレス・IPから推定した地域・接続事業者情報・アクセス時刻を記録します。IPの概算地域判定には外部のIP位置推定サービスを利用します。GPS共有は任意で、ボタンを押してブラウザで許可した場合だけ送信されます。</p><div id="visitorResult"></div>
+<section id="visitor" class="card visitor hide"><div class="eyebrow">SHARED LINK</div><h2 id="visitorTitle">リンクを開きました</h2>
+<div id="visitConsent" class="details">
+<h2>アクセス情報の記録について</h2>
+<p>このリンクを続けると、IPアドレス、IPから推定した地域、接続事業者情報、アクセス時刻が記録され、リンク作成者が確認できます。IPの位置推定には外部サービス ipwho.is へIPアドレスを送信します。</p>
+<p class="warn">同意するまではアクセス記録を作成しません。GPSは別途ボタンを押し、ブラウザで許可した場合だけ共有されます。推定地域は住所や正確な現在地ではありません。同意しない場合は記録せず、このページで終了します。</p>
+<div class="created-actions"><button id="acceptVisit" type="button">同意して続ける</button><button id="declineVisit" class="secondary" type="button">同意しない</button></div>
+</div>
+<div id="visitorResult"></div>
 <div id="visitorForm" class="details hide">
-<h2>何か伝えたいことはありますか？</h2><p class="muted">メッセージ・生年月日・性別は、必要な場合だけ入力できます。すべて任意で、空欄のままでも利用できます。</p><p class="warn">送信した内容はリンク作成者が確認できます。URLの24時間有効期限はリンク自体の期限で、送信データの保存期間を示すものではありません。リンクの有効期限は24時間です。アクセス記録・回答・GPS情報は、発行から24時間以上経過した後の毎日1回の定期削除処理で削除されます。削除まで最大約48時間かかる場合があります。生年月日・性別は個人情報なので、入力しないことを推奨します。未成年者は特に入力しないでください。共有してよい内容だけを入力してください。</p>
+<h2>メッセージ（任意）</h2><p class="muted">送信した内容はリンク作成者が確認できます。氏名・住所・連絡先など、個人を特定できる情報は入力しないでください。</p>
 <label class="field-label" for="visitorMessage">メッセージ</label>
 <textarea id="visitorMessage" rows="3" maxlength="1000" placeholder="伝えたいことを書いてね" style="width:100%;resize:vertical;color:var(--text);background:#080f1a;border:1px solid var(--line);border-radius:11px;padding:12px;font:inherit"></textarea>
-<label class="field-label" for="visitorBirth">生年月日（任意）</label><input id="visitorBirth" type="date">
-<label class="field-label" for="visitorGender">性別（任意）</label>
-<select id="visitorGender"><option value="">選択してください</option><option value="男性">男性</option><option value="女性">女性</option><option value="その他">その他</option><option value="回答しない">回答しない</option></select>
 <button id="sendVisitorDetails" class="primary" type="button">回答を送信する</button><p id="visitorDetailsMsg" class="status" role="status"></p>
-</div><div id="gpsArea" class="hide"><button id="gpsButton" class="secondary" style="margin-top:12px">GPSで現在地を共有する（任意）</button></div><p id="gpsMsg" class="status"></p><p id="visitorMsg" class="status">アクセス情報を確認しています…</p><button id="continue" class="hide primary">指定されたページへ進む</button></section>
+</div><div id="gpsArea" class="hide"><button id="gpsButton" class="secondary" style="margin-top:12px">GPSで現在地を共有する（任意）</button></div><p id="gpsMsg" class="status"></p><p id="visitorMsg" class="status">記録前に内容を確認してください。</p><button id="continue" class="hide primary">指定されたページへ進む</button></section>
 <section id="creator">
 <section class="card primary-card"><div class="eyebrow">01 / CREATE LINK</div><h2 style="margin-top:5px">どんなリンクを作る？</h2><p>使いたいモードを選択してください。</p>
 <div class="mode-switch"><button type="button" class="mode-option" data-mode="surprise" aria-pressed="true"><b>👀 びっくり表示</b><small>IP・推定地域を表示</small></button><button type="button" class="mode-option" data-mode="redirect" aria-pressed="false"><b>↗ URL転送</b><small>指定したページへ移動</small></button></div>
@@ -30,29 +34,128 @@
 </section></main><footer class="footer">TRACE LAB · AN ORBIT LAB EXPERIMENT</footer></div>
 <script>
 const API="https://trace-lab-api.orbit-lab-a.workers.dev";
-const $=s=>document.querySelector(s),params=new URLSearchParams(location.search),visitId=params.get("id"),ownerToken=params.get("owner"),api=API;let mode="surprise";
+const $=s=>document.querySelector(s),params=new URLSearchParams(location.search),visitId=params.get("id"),ownerToken=params.get("owner"),api=API;
+let mode="surprise";
 const worker=()=>API,headers=()=>({"Content-Type":"application/json"});
 function esc(v){return String(v??"—").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function fields(el,data){el.innerHTML=Object.entries(data).map(([k,v])=>'<div class="datum"><small>'+esc(k)+'</small><b>'+esc(v)+'</b></div>').join("")}
-function setupVisitorForm(visitRecordId){$("#visitorForm").classList.remove("hide");$("#sendVisitorDetails").onclick=async()=>{const b=$("#sendVisitorDetails");b.disabled=true;b.textContent="送信中…";try{const r=await fetch(api+"/api/details",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({visitRecordId,message:$("#visitorMessage").value.trim(),birthDate:$("#visitorBirth").value,gender:$("#visitorGender").value})});const d=await r.json();if(!r.ok)throw Error(d.error||"送信できませんでした");$("#visitorDetailsMsg").textContent="回答を送信しました。";b.textContent="送信済み";}catch(e){$("#visitorDetailsMsg").textContent=e.message;b.disabled=false;b.textContent="回答を送信する";}};}
-function setMode(next){mode=next;document.querySelectorAll("[data-mode]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));$("#destinationRow").classList.toggle("hide",mode!=="redirect");$("#dest").required=mode==="redirect";if(mode==="surprise")$("#dest").value=""}
-document.querySelectorAll("[data-mode]").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
-if(ownerToken){$("#creator").classList.add("hide");$("#owner").classList.remove("hide");(async()=>{try{if(!api)throw Error("リンク情報が不足しています");const r=await fetch(api+"/api/owner-results?token="+encodeURIComponent(ownerToken));const d=await r.json();if(!r.ok)throw Error(d.error||"記録を読み込めません");$("#ownerResults").innerHTML=d.results.length?d.results.map(x=>'<article class="owner-item"><small>'+esc(x.created_at)+' · '+esc(x.mode==="redirect"?"URL転送":"びっくり表示")+'</small><b>'+esc(x.ip)+'</b><small>IP推定地域：'+esc([x.region_label||x.region,x.city_label||x.city].filter(Boolean).join("・")||"提供なし")+'</small><small>国：'+esc(x.country||"提供なし")+'</small><small>'+esc([x.isp,x.org,x.asn].filter(Boolean).join(" · ")||"事業者・ASN情報なし")+'</small><small>'+esc(x.accuracy_radius_km!=null?"位置精度の目安：半径約"+x.accuracy_radius_km+" km":"位置精度の半径：データ提供なし")+'</small><small>+(x.message?'</small><small>メッセージ：'+esc(x.message):'')+(x.birth_date?'</small><small>生年月日：'+esc(x.birth_date):'')+(x.gender?'</small><small>性別：'+esc(x.gender):'')+(x.gps_lat!=null&&x.gps_lon!=null?'</small><small>GPS共有：'+esc(x.gps_lat)+", "+esc(x.gps_lon)+'</small>':'</small>')+'</article>').join(""):'<p class="status">まだアクセス記録はありません。</p>';}catch(e){$("#ownerResults").innerHTML='<p class="status">'+esc(e.message)+'</p>';}})();}
-if(visitId){$("#creator").classList.add("hide");$("#visitor").classList.remove("hide");(async()=>{try{if(!api)throw Error("リンク情報が不足しています");const r=await fetch(api+"/api/visit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:visitId})});const d=await r.json();if(!r.ok)throw Error(d.error||"アクセス情報を取得できません");if(d.mode==="surprise"){
-$("#visitorTitle").textContent="IPアドレスから分かる参考情報";
-$("#gpsArea").classList.remove("hide");
-const estimated=[d.regionLabel,d.cityLabel].filter(Boolean).join("・");
-const ipRows=[
-["IPアドレス",d.ip],
-["推定地域",estimated||null],
-["国",d.country],
-["接続事業者",d.isp],
-["組織",d.org],
-["ASN",d.asn],
-["位置精度の目安",d.accuracyRadiusKm!=null?"半径約"+d.accuracyRadiusKm+" km":null]
-].filter(([,v])=>v!==null&&v!==undefined&&String(v).trim()!=="");
-$("#visitorResult").innerHTML='<div class="result">'+ipRows.map(([k,v])=>'<div class="datum"><small>'+esc(k)+'</small><b>'+esc(v)+'</b></div>').join("")+'</div><p class="muted" style="font-size:11px;margin-top:10px">画面で受信した時刻：'+esc(new Date().toLocaleString("ja-JP"))+'</p><p class="warn">推定地域は通信事業者の出口設備などを示す場合があります。実際の現在地・住所ではなく、GPS情報でもありません。位置精度の半径がデータに含まれない場合、数値は表示しません。</p>';
-}else{$("#visitorTitle").textContent="転送先へ移動します";$("#visitorResult").textContent="アクセス情報を記録しました。";const dest=d.destination;$("#continue").classList.remove("hide");$("#continue").onclick=()=>location.href=dest;setTimeout(()=>location.href=dest,3500);}$("#visitorMsg").textContent="アクセス情報を記録しました。リンク作成者が確認できます。";if(d.mode==="surprise"){const visitRecordId=d.visitRecordId;setupVisitorForm(visitRecordId);$("#gpsButton").onclick=()=>{if(!navigator.geolocation){$("#gpsMsg").textContent="このブラウザではGPSを利用できません。";return;}$("#gpsMsg").textContent="位置情報の許可を待っています…";navigator.geolocation.getCurrentPosition(async pos=>{try{const gr=await fetch(api+"/api/gps",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({visitRecordId,latitude:pos.coords.latitude,longitude:pos.coords.longitude})});const gd=await gr.json();if(!gr.ok)throw Error(gd.error||"送信できません");$("#gpsMsg").textContent="GPS位置情報を共有しました。";$("#gpsButton").disabled=true;}catch(e){$("#gpsMsg").textContent=e.message;}},err=>{$("#gpsMsg").textContent=err.code===1?"許可されませんでした。IP推定のまま利用できます。":"GPSを取得できませんでした。";},{enableHighAccuracy:true,timeout:12000,maximumAge:0});};}}catch(e){$("#visitorTitle").textContent="リンクを開けませんでした";$("#visitorMsg").textContent=e.message;}})();}
-$("#make").onclick=async()=>{const b=$("#make");try{const w=worker();const destination=$("#dest").value.trim();if(mode==="redirect"){const normalized=/^[a-z][a-z0-9+.-]*:\/\//i.test(destination)?destination:"https://"+destination;try{const parsed=new URL(normalized);if(!["http:","https:"].includes(parsed.protocol))throw Error();$("#dest").value=parsed.href;}catch{throw Error("正しい転送先URLを入力してください");}}b.disabled=true;b.textContent="発行しています…";$("#createMsg").textContent="";const r=await fetch(w+"/api/create",{method:"POST",headers:headers(),body:JSON.stringify(mode==="redirect"?{mode,destination}:{mode})}),d=await r.json();if(!r.ok)throw Error(d.error||"発行できません");const link=location.origin+location.pathname+"?id="+encodeURIComponent(d.id),ownerLink=location.origin+location.pathname+"?owner="+encodeURIComponent(d.ownerToken),expires=new Date(d.expiresAt).toLocaleString("ja-JP");$("#created").classList.remove("hide");$("#created").innerHTML='<b>共有URLを発行しました</b><p class="muted">有効期限：'+esc(expires)+'（発行から24時間）</p><div class="created-url">'+esc(link)+'</div><div class="created-actions"><button id="copy" type="button">共有URLをコピー</button><button id="share" class="secondary" type="button">共有する</button></div><p class="muted" style="margin-top:13px">制作者専用：アクセス記録の確認URL（このURLは他人に共有しないでください）</p><div class="created-url">'+esc(ownerLink)+'</div><button id="ownerCopy" class="secondary" type="button" style="width:100%">確認URLをコピー</button>';$("#ownerCopy").onclick=async()=>{try{await navigator.clipboard.writeText(ownerLink);$("#ownerCopy").textContent="確認URLをコピーしました";}catch{$("#createMsg").textContent="コピーできませんでした。";}};const ownerOpen=document.createElement("a");ownerOpen.href=ownerLink;ownerOpen.target="_blank";ownerOpen.rel="noopener noreferrer";ownerOpen.textContent="アクセス記録を確認する ↗";ownerOpen.style.cssText="display:block;text-align:center;text-decoration:none;background:#1d2b40;color:#e1edff;border:1px solid #26374d;border-radius:11px;padding:12px 13px;margin-top:8px;font-weight:800";$("#ownerCopy").after(ownerOpen);$ ("#copy").onclick=async()=>{try{await navigator.clipboard.writeText(link);$("#copy").textContent="コピーしました！";}catch{$("#createMsg").textContent="コピーできませんでした。URLを長押ししてコピーしてください。";}};$("#share").onclick=async()=>{if(navigator.share){try{await navigator.share({title:"TRACE LAB",url:link});}catch{}}else{await navigator.clipboard.writeText(link);$("#share").textContent="URLをコピーしました";}};$("#createMsg").textContent="このURLを相手に共有できます。";}catch(e){$("#createMsg").textContent=e.message;}finally{b.disabled=false;b.textContent="共有URLを発行する";}};
-
+function setupVisitorForm(visitRecordId){
+  $("#visitorForm").classList.remove("hide");
+  $("#sendVisitorDetails").onclick=async()=>{
+    const button=$("#sendVisitorDetails");
+    button.disabled=true;button.textContent="送信中…";
+    try{
+      const response=await fetch(api+"/api/details",{method:"POST",headers:headers(),body:JSON.stringify({visitRecordId,message:$("#visitorMessage").value.trim()})});
+      const data=await response.json();
+      if(!response.ok)throw Error(data.error||"送信できませんでした");
+      $("#visitorDetailsMsg").textContent="回答を送信しました。";
+      button.textContent="送信済み";
+    }catch(error){
+      $("#visitorDetailsMsg").textContent=error.message;
+      button.disabled=false;button.textContent="回答を送信する";
+    }
+  };
+}
+function setMode(next){
+  mode=next;
+  document.querySelectorAll("[data-mode]").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.mode===mode)));
+  $("#destinationRow").classList.toggle("hide",mode!=="redirect");
+  $("#dest").required=mode==="redirect";
+  if(mode==="surprise")$("#dest").value="";
+}
+document.querySelectorAll("[data-mode]").forEach(button=>button.addEventListener("click",()=>setMode(button.dataset.mode)));
+async function loadOwnerResults(){
+  try{
+    const response=await fetch(api+"/api/owner-results?token="+encodeURIComponent(ownerToken));
+    const data=await response.json();
+    if(!response.ok)throw Error(data.error||"記録を読み込めません");
+    if(!data.results.length){$("#ownerResults").innerHTML='<p class="status">まだアクセス記録はありません。</p>';return;}
+    $("#ownerResults").innerHTML=data.results.map(item=>{
+      const details=[];
+      if(item.message)details.push('<small>メッセージ：'+esc(item.message)+'</small>');
+      if(item.gps_lat!=null&&item.gps_lon!=null)details.push('<small>GPS共有：'+esc(item.gps_lat)+', '+esc(item.gps_lon)+'</small>');
+      return '<article class="owner-item"><small>'+esc(item.created_at)+' · '+esc(item.mode==="redirect"?"URL転送":"びっくり表示")+'</small><b>'+esc(item.ip)+'</b><small>IP推定地域：'+esc([item.region_label||item.region,item.city_label||item.city].filter(Boolean).join("・")||"提供なし")+'</small><small>国：'+esc(item.country||"提供なし")+'</small><small>'+esc([item.isp,item.org,item.asn].filter(Boolean).join(" · ")||"事業者・ASN情報なし")+'</small>'+details.join("")+'</article>';
+    }).join("");
+  }catch(error){$("#ownerResults").innerHTML='<p class="status">'+esc(error.message)+'</p>';}
+}
+if(ownerToken){$("#creator").classList.add("hide");$("#owner").classList.remove("hide");loadOwnerResults();}
+async function startVisit(){
+  const accept=$("#acceptVisit");
+  accept.disabled=true;accept.textContent="確認中…";
+  try{
+    const response=await fetch(api+"/api/visit",{method:"POST",headers:headers(),body:JSON.stringify({id:visitId,consent:true})});
+    const data=await response.json();
+    if(!response.ok)throw Error(data.error||"アクセス情報を取得できません");
+    $("#visitConsent").classList.add("hide");
+    if(data.mode==="surprise"){
+      $("#visitorTitle").textContent="IPアドレスから分かる参考情報";
+      $("#gpsArea").classList.remove("hide");
+      const estimated=[data.regionLabel,data.cityLabel].filter(Boolean).join("・");
+      const rows=[["IPアドレス",data.ip],["推定地域",estimated],["国",data.country],["接続事業者",data.isp],["組織",data.org],["ASN",data.asn],["位置精度の目安",data.accuracyRadiusKm!=null?"半径約"+data.accuracyRadiusKm+" km":null]].filter(([,value])=>value!==null&&value!==undefined&&String(value).trim()!=="");
+      $("#visitorResult").innerHTML='<div class="result">'+rows.map(([key,value])=>'<div class="datum"><small>'+esc(key)+'</small><b>'+esc(value)+'</b></div>').join("")+'</div><p class="muted" style="font-size:11px;margin-top:10px">画面で受信した時刻：'+esc(new Date().toLocaleString("ja-JP"))+'</p><p class="warn">推定地域は通信事業者の出口設備などを示す場合があります。実際の現在地・住所ではなく、GPS情報でもありません。</p>';
+      $("#visitorMsg").textContent="アクセス情報を記録しました。リンク作成者が確認できます。";
+      setupVisitorForm(data.visitRecordId);
+      $("#gpsButton").onclick=()=>{
+        if(!navigator.geolocation){$("#gpsMsg").textContent="このブラウザではGPSを利用できません。";return;}
+        $("#gpsMsg").textContent="位置情報の許可を待っています…";
+        navigator.geolocation.getCurrentPosition(async position=>{
+          try{
+            const gpsResponse=await fetch(api+"/api/gps",{method:"POST",headers:headers(),body:JSON.stringify({visitRecordId:data.visitRecordId,latitude:position.coords.latitude,longitude:position.coords.longitude})});
+            const gpsData=await gpsResponse.json();
+            if(!gpsResponse.ok)throw Error(gpsData.error||"送信できません");
+            $("#gpsMsg").textContent="GPS位置情報を共有しました。";
+            $("#gpsButton").disabled=true;
+          }catch(error){$("#gpsMsg").textContent=error.message;}
+        },error=>{$("#gpsMsg").textContent=error.code===1?"許可されませんでした。GPSは共有していません。":"GPSを取得できませんでした。";},{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+      };
+    }else{
+      $("#visitorTitle").textContent="転送先へ移動します";
+      $("#visitorResult").textContent="アクセス情報を記録しました。";
+      $("#visitorMsg").textContent="アクセス情報を記録しました。リンク作成者が確認できます。";
+      const destination=data.destination;
+      $("#continue").classList.remove("hide");
+      $("#continue").onclick=()=>location.href=destination;
+      setTimeout(()=>location.href=destination,3500);
+    }
+  }catch(error){
+    $("#visitorTitle").textContent="リンクを開けませんでした";
+    $("#visitorMsg").textContent=error.message;
+    accept.disabled=false;accept.textContent="同意して続ける";
+  }
+}
+if(visitId){
+  $("#creator").classList.add("hide");
+  $("#visitor").classList.remove("hide");
+  $("#acceptVisit").onclick=startVisit;
+  $("#declineVisit").onclick=()=>{
+    $("#visitConsent").classList.add("hide");
+    $("#visitorTitle").textContent="同意されませんでした";
+    $("#visitorMsg").textContent="アクセス情報は記録していません。このページを閉じてください。";
+  };
+}
+$("#make").onclick=async()=>{
+  const button=$("#make");
+  try{
+    const destination=$("#dest").value.trim();
+    if(mode==="redirect"){
+      const normalized=/^[a-z][a-z0-9+.-]*:\/\//i.test(destination)?destination:"https://"+destination;
+      try{const parsed=new URL(normalized);if(!["http:","https:"].includes(parsed.protocol))throw Error();$("#dest").value=parsed.href;}
+      catch{throw Error("正しい転送先URLを入力してください");}
+    }
+    button.disabled=true;button.textContent="発行しています…";$("#createMsg").textContent="";
+    const response=await fetch(worker()+"/api/create",{method:"POST",headers:headers(),body:JSON.stringify(mode==="redirect"?{mode,destination}:{mode})});
+    const data=await response.json();
+    if(!response.ok)throw Error(data.error||"発行できません");
+    const link=location.origin+location.pathname+"?id="+encodeURIComponent(data.id);
+    const ownerLink=location.origin+location.pathname+"?owner="+encodeURIComponent(data.ownerToken);
+    const expires=new Date(data.expiresAt).toLocaleString("ja-JP");
+    $("#created").classList.remove("hide");
+    $("#created").innerHTML='<b>共有URLを発行しました</b><p class="muted">有効期限：'+esc(expires)+'（発行から24時間）</p><div class="created-url">'+esc(link)+'</div><div class="created-actions"><button id="copy" type="button">共有URLをコピー</button><button id="share" class="secondary" type="button">共有する</button></div><p class="muted" style="margin-top:13px">制作者専用：アクセス記録の確認URL（このURLは他人に共有しないでください）</p><div class="created-url">'+esc(ownerLink)+'</div><button id="ownerCopy" class="secondary" type="button" style="width:100%">確認URLをコピー</button>';
+    $("#ownerCopy").onclick=async()=>{try{await navigator.clipboard.writeText(ownerLink);$("#ownerCopy").textContent="確認URLをコピーしました";}catch{$("#createMsg").textContent="コピーできませんでした。";}};
+    const ownerOpen=document.createElement("a");ownerOpen.href=ownerLink;ownerOpen.target="_blank";ownerOpen.rel="noopener noreferrer";ownerOpen.textContent="アクセス記録を確認する ↗";ownerOpen.style.cssText="display:block;text-align:center;text-decoration:none;background:#1d2b40;color:#e1edff;border:1px solid #26374d;border-radius:11px;padding:12px 13px;margin-top:8px;font-weight:800";$("#ownerCopy").after(ownerOpen);
+    $("#copy").onclick=async()=>{try{await navigator.clipboard.writeText(link);$("#copy").textContent="コピーしました！";}catch{$("#createMsg").textContent="コピーできませんでした。URLを長押ししてコピーしてください。";}};
+    $("#share").onclick=async()=>{if(navigator.share){try{await navigator.share({title:"TRACE LAB",url:link});}catch{}}else{try{await navigator.clipboard.writeText(link);$("#share").textContent="URLをコピーしました";}catch{$("#createMsg").textContent="コピーできませんでした。";}}};
+    $("#createMsg").textContent="このURLを相手に共有できます。";
+  }catch(error){$("#createMsg").textContent=error.message;}
+  finally{button.disabled=false;button.textContent="共有URLを発行する";}
+};
 </script></body></html>
