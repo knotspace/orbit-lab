@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate TRACE LAB scripts
-        run: |
-          node --check lab/trace-lab/worker.js
-          sed -n '/<script>/,/<\\/script>/p' lab/trace-lab/index.html | sed '1d;$d' > "$RUNNER_TEMP/trace-lab.js"
-          node --check "$RUNNER_TEMP/trace-lab.js"
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Validate TRACE LAB scripts
+        run: |
+          node --check lab/trace-lab/worker.js
+          sed -n '/<script>/,/<\/script>/p' lab/trace-lab/index.html | sed '1d;$d' > "$RUNNER_TEMP/trace-lab.js"
+          node --check "$RUNNER_TEMP/trace-lab.js"
       - name: Check deployment settings
         run: |
           if grep -q "REPLACE_WITH_YOUR_D1_DATABASE_ID" lab/trace-lab/wrangler.toml; then
