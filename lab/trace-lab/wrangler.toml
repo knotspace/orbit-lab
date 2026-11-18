@@ -8,4 +8,4 @@ database_name = "trace-lab"
 database_id = "719292b2-ad01-4c5d-82bd-8731c68de375"
 
 [triggers]
-crons = ["0 3 * * *"]
+crons = ["0 * * * *"]
