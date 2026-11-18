@@ -1,18 +1,47 @@
 const cors={"Access-Control-Allow-Origin":"https://knotspace.github.io","Access-Control-Allow-Methods":"GET,POST,OPTIONS","Access-Control-Allow-Headers":"Content-Type,Authorization","Access-Control-Max-Age":"86400","Vary":"Origin"};
-const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...cors,"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"}});
+const json=(data,status=200,extraHeaders={})=>new Response(JSON.stringify(data),{status,headers:{...cors,...extraHeaders,"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"}});
 const auth=(r,e)=>!!e.ADMIN_KEY&&r.headers.get("Authorization")==="Bearer "+e.ADMIN_KEY;
 const makeId=()=>crypto.randomUUID().replace(/-/g,"").slice(0,20);
 const makeOwnerToken=()=>crypto.randomUUID().replace(/-/g,"")+crypto.randomUUID().replace(/-/g,"").slice(0,8);
 const cleanUrl=value=>{try{const u=new URL(value);return ["https:","http:"].includes(u.protocol)?u.href:null}catch{return null}};
 const MAX_BODY_BYTES=8192;
 const readJson=async req=>{const length=req.headers.get("Content-Length");if(length&&Number(length)>MAX_BODY_BYTES)return {ok:false,status:413,error:"Request body too large"};let raw;try{raw=await req.text()}catch{return {ok:false,status:400,error:"Invalid JSON"}}if(new TextEncoder().encode(raw).byteLength>MAX_BODY_BYTES)return {ok:false,status:413,error:"Request body too large"};try{const value=JSON.parse(raw);if(!value||typeof value!=="object"||Array.isArray(value))return {ok:false,status:400,error:"JSON object required"};return {ok:true,value}}catch{return {ok:false,status:400,error:"Invalid JSON"}}};
+const rateLimitPolicies={
+ "/api/create":{limit:8,windowMs:15*60*1000},
+ "/api/visit":{limit:30,windowMs:15*60*1000},
+ "/api/details":{limit:10,windowMs:15*60*1000},
+ "/api/gps":{limit:5,windowMs:15*60*1000},
+ "/api/owner-results":{limit:30,windowMs:15*60*1000}
+};
+let rateLimitSchemaReady;
+async function applyRateLimit(req,env,path){
+ const policy=rateLimitPolicies[path];
+ if(!policy)return null;
+ if(!rateLimitSchemaReady){
+  rateLimitSchemaReady=env.DB.prepare("CREATE TABLE IF NOT EXISTS rate_limits (ip_hash TEXT NOT NULL, route TEXT NOT NULL, window_start INTEGER NOT NULL, count INTEGER NOT NULL, expires_at INTEGER NOT NULL, PRIMARY KEY(ip_hash,route,window_start))").run().catch(error=>{rateLimitSchemaReady=null;throw error;});
+ }
+ await rateLimitSchemaReady;
+ const ip=req.headers.get("CF-Connecting-IP")||"unknown";
+ const digest=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(ip));
+ const ipHash=[...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,"0")).join("");
+ const windowStart=Math.floor(Date.now()/policy.windowMs)*policy.windowMs;
+ const resetAt=windowStart+policy.windowMs;
+ const row=await env.DB.prepare("INSERT INTO rate_limits (ip_hash,route,window_start,count,expires_at) VALUES (?,?,?,1,?) ON CONFLICT(ip_hash,route,window_start) DO UPDATE SET count=MIN(rate_limits.count+1,?) RETURNING count").bind(ipHash,path,windowStart,resetAt,policy.limit+1).first();
+ if(!row||row.count>policy.limit){
+  const retryAfter=Math.max(1,Math.ceil((resetAt-Date.now())/1000));
+  return json({error:"アクセスが集中しています。少し待ってから再度お試しください。"},429,{"Retry-After":String(retryAfter)});
+ }
+ return null;
+}
+
 export default {
- async scheduled(event,env,ctx){ctx.waitUntil((async()=>{const cutoff=new Date(Date.now()-24*60*60*1000).toISOString();await env.DB.prepare("DELETE FROM visits WHERE link_id IN (SELECT id FROM links WHERE created_at <= ?)").bind(cutoff).run();await env.DB.prepare("DELETE FROM links WHERE created_at <= ?").bind(cutoff).run();})());},
+ async scheduled(event,env,ctx){ctx.waitUntil((async()=>{await env.DB.prepare("CREATE TABLE IF NOT EXISTS rate_limits (ip_hash TEXT NOT NULL, route TEXT NOT NULL, window_start INTEGER NOT NULL, count INTEGER NOT NULL, expires_at INTEGER NOT NULL, PRIMARY KEY(ip_hash,route,window_start))").run();const cutoff=new Date(Date.now()-24*60*60*1000).toISOString();await env.DB.prepare("DELETE FROM visits WHERE link_id IN (SELECT id FROM links WHERE created_at <= ?)").bind(cutoff).run();await env.DB.prepare("DELETE FROM links WHERE created_at <= ?").bind(cutoff).run();await env.DB.prepare("DELETE FROM rate_limits WHERE expires_at <= ?").bind(Date.now()).run();})());},
  async fetch(req,env){
   const origin=req.headers.get("Origin");
   if(origin&&origin!=="https://knotspace.github.io")return new Response("Forbidden",{status:403});
   if(req.method==="OPTIONS")return new Response(null,{headers:cors});
   const u=new URL(req.url),p=u.pathname;
+  const limited=await applyRateLimit(req,env,p);if(limited)return limited;
   if(p==="/api/create"&&req.method==="POST"){
    const parsed=await readJson(req);
    if(!parsed.ok)return json({error:parsed.error},parsed.status);
