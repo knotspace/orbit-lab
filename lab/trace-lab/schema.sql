@@ -28,3 +28,11 @@ CREATE TABLE IF NOT EXISTS link_owners (
  FOREIGN KEY(link_id) REFERENCES links(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS link_owners_token ON link_owners(owner_token);
+CREATE TABLE IF NOT EXISTS rate_limits (
+ ip_hash TEXT NOT NULL,
+ route TEXT NOT NULL,
+ window_start INTEGER NOT NULL,
+ count INTEGER NOT NULL,
+ expires_at INTEGER NOT NULL,
+ PRIMARY KEY(ip_hash, route, window_start)
+);
